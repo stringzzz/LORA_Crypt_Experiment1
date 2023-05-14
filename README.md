@@ -33,5 +33,7 @@ While it does serve as an encryption tool for storing files, one of the main rea
 5. Using the hash of the password as key, attempt decrypt of the crypt file
 6. Compare the md5 hash of the resulting plaintext with the hash from (username)_file.HASH contents
 7. If match, login successful, prompt user for action:
+
 8a (encrypt). Encrypt all unencrypted files in locker, excluding the .HASH file
+
 8b (decrypt). Decrypt all the encrypted files in the locker, excluding the '(username)_file.LORA' file

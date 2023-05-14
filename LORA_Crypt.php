@@ -2,10 +2,11 @@
 
 /*
 
-LORA Crypt (LOckeR Automator Version 0.01)
+LORA Crypt (LOckeR Automator Version 0.02)
 Created by stringzzz, Ghostwarez Co.
 Project Start Date: 05-13-2023
 Project Completion Date: 05-14-2023
+Version 0.02: 05-14-2023 (Added single file encryption/decryption)
 
 Encrypt or decrypt files in the locker folder created with 'LORA_Registration.php', by logging in with your username and password
 
@@ -72,7 +73,8 @@ if (md5($crypt_file_plaintext) != $crypt_hash) {
 	echo "Login successful, welcome " . $username . ".\n";
 	$quit = false;
 	while(!$quit) {
-		$user_choice = strtolower(readline("Enter 'encrypt', 'decrypt', or 'quit': "));
+		echo "Enter:\n'encrypt': Encrypt all unencrypted files\n'encryptone': Encrypt unencrypted files one at a time\n'decrypt': Decrypt all encrypted files\n'decryptone': Decrypt encrypted files one at a time\n'quit': Exit the system\n";
+		$user_choice = strtolower(readline(""));
 		if ($user_choice == 'encrypt') {
 			//Encrypt every unencrypted file (No .LORA or .HASH extension) in the (username)_locker directory
 			echo "Encrypting unencrypted files belonging to " . $username . ".\n";
@@ -94,6 +96,50 @@ if (md5($crypt_file_plaintext) != $crypt_hash) {
 				}
 			}
 			echo "Locker encryption for user " . $username . " complete.\n\n";	
+		} else if ($user_choice == 'encryptone') {
+			$user_choice2 = "none";
+			while($user_choice2 != 'quit') {
+				$unencrypted_files = [];
+				$file_count = 0;
+				foreach (array_diff(scandir(dirname(__file__) .  "/" . $username . "_locker"), array('.', '..')) as $file) {
+					if (str_contains($file, '.LORA') || str_contains($file, '.HASH')) {
+						//Skip encrypted files or .HASH file
+						continue;
+					}
+					else {
+						$unencrypted_files[] = $username . "_locker/" . $file;
+						$file_count++;
+					}
+				}
+				if ($file_count != 0) {
+					for($i = 0; $i < $file_count; $i++) {
+						echo $i . " : " . $unencrypted_files[$i] . "\n";
+					}
+					$file_choice = readline("Enter the index of the file to encrypt, or 'quit' to exit: ");
+					if ($file_choice >= 0 && $file_choice < $file_count) {
+						//Encrypt the file, add .LORA extension
+						$iv = openssl_random_pseudo_bytes($length);
+						$plaintext = file_get_contents($unencrypted_files[$file_choice]);
+						$ciphertext = openssl_encrypt($plaintext, $method, $key, OPENSSL_RAW_DATA, $iv);
+						$ciphertext = base64_encode($ciphertext) . '|' . base64_encode($iv);
+						$output_file = fopen($unencrypted_files[$file_choice], "w") or die("Unable to open " . $unencrypted_files[$file_choice] . " for write.\n");
+						fwrite($output_file, $ciphertext);
+						fclose($output_file);
+						rename($unencrypted_files[$file_choice], $unencrypted_files[$file_choice] . ".LORA");
+						echo $unencrypted_files[$file_choice] . " now encrypted.\n\n";
+						continue;
+					} else if (strtolower($file_choice) == 'quit') {
+						echo "Exiting single file encryption mode.\n\n";
+						break;
+					} else {
+						echo "Invalid file index " . $file_choice . "\n";
+						continue;
+					}
+				} else {
+					echo "No unencrypted files remaining, exiting single file encryption mode...\n\n";
+					break;
+				}
+			}
 		} else if ($user_choice == 'decrypt') {
 			//Decrypt every encrypted file (Except (username)_file.LORA) in the (username)_locker directory
 			echo "Decrypting encrypted files belonging to " . $username . ".\n";
@@ -115,6 +161,52 @@ if (md5($crypt_file_plaintext) != $crypt_hash) {
 				}
 			}
 			echo "Locker decryption for user " . $username . " complete.\n\n";	
+		} else if ($user_choice == 'decryptone') {
+			$user_choice2 = "none";
+			while($user_choice2 != 'quit') {
+				$encrypted_files = [];
+				$file_count = 0;
+				foreach (array_diff(scandir(dirname(__file__) .  "/" . $username . "_locker"), array('.', '..')) as $file) {
+				if (!str_contains($file, '.LORA') || $file == $username . "_file.LORA") {
+					//Skip unencrypted files or the (username)_file.LORA file
+					continue;
+				} else {
+					$encrypted_files[] = $username . "_locker/" . $file;
+					$file_count++;
+					}
+				}
+				
+				if ($file_count != 0) {
+					for($i = 0; $i < $file_count; $i++) {
+						echo $i . " : " . $encrypted_files[$i] . "\n";
+					}
+					$file_choice = readline("Enter the index of the file to decrypt, or 'quit' to exit: ");
+					
+					if ($file_choice >= 0 && $file_choice < $file_count) {
+						//Decrypt file, remove .LORA extension
+						$ciphertext2 = file_get_contents($encrypted_files[$file_choice]);
+						list($ciphertext2, $iv2) = explode('|', $ciphertext2);
+						$iv2 = base64_decode($iv2);
+						$plaintext2 = openssl_decrypt($ciphertext2, $method, $key, 0, $iv2);
+						$output_file = fopen($encrypted_files[$file_choice], "w") or die("Unable to open " . $encrypted_files[$file_choice] . " for write.\n");
+						fwrite($output_file, $plaintext2);
+						fclose($output_file);
+						rename($encrypted_files[$file_choice], str_replace(".LORA", "", $encrypted_files[$file_choice] . ".LORA"));
+						echo $encrypted_files[$file_choice] . " now decrypted. Now sleeping 8 seconds to refresh...\n\n";
+						sleep(8);
+						continue;
+					} else if (strtolower($file_choice) == 'quit') {
+						echo "Exiting single file decryption mode.\n\n";
+						break;
+					} else {
+						echo "Invalid file index " . $file_choice . "\n";
+						continue;
+					}
+				} else {
+					echo "No encrypted files remaining. Exiting single file decryption mode...\n\n";
+					break;
+				}
+			}
 		} else if ($user_choice == 'quit') {
 			echo "Thank you for working with LORA, have a nice day.\n";
 			break;

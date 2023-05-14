@@ -21,7 +21,7 @@ While it does serve as an encryption tool for storing files, one of the main rea
 5. Create locker directory with username
 6. Store the crypt file as '(username)_file.LORA' in the locker
 7. Store the unencrypted crypt file hash as '(username)_file.HASH
-Setup complete
+ Setup complete
 
 ############# LORA_Crypt.php ##############
 

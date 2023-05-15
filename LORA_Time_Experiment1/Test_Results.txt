@@ -1,0 +1,48 @@
+LORA_Crypt Time Test Experiment 1
+by stringzzz, Ghostwarez Co.
+05-14-2023
+
+The LORA locker directory was set up with the username "LORA_TimeTest" using
+'LORA_Registration.php', password was "5000"
+The "Crypt_File" was setup with 2^20 bytes (1MB)
+
+The following is that setup on the terminal:
+
+New Username: LORA_TimeTest
+New username valid.
+New password: 5000
+Confirm the new password: 5000
+New password valid.
+LORA_TimeTest_locker directory created.
+LORA_TimeTest_file.LORA file successfully created.
+LORA_TimeTest_file.HASH file successfully created.
+New username account creation complete.
+
+A script 'Password_Hash_TimeTest.php'was setup to log the time it would take to generate strings from "0"
+to "5000", md5 hashing each one and comparing it with the md5 hash of the original "5000".
+The following are the results of this brute force attack:
+
+Password_Hash_TimeTest:
+Start time	1684114897
+End time:	1684114897
+Total Time elapsed: 0 seconds
+
+The time was so short that with this level of precision, it appeared to be zero.
+
+Then, the 'LORA_Crypt_TimeTest.php' script was set up to generate every string from "0"
+to "5000", md5 hashing it and attempting to decrypt the 'LORA_TimeTest_locker/LORA_TimeTest_file.LORA' file. 
+The resulting candidate plaintext was then md5 hashed and compared with the hash 
+in 'LORA_TimeTest_locker/LORA_TimeTest_file.HASH'. Here are the results of the brute force attack on the LORA_Crypt system:
+
+Username: LORA_TimeTest
+LORA_Crypt_TimeTest:
+Start time	1684114917
+End time:	1684114974
+Total Time elapsed: 57 seconds
+
+Clearly it takes several times longer to brute force this system. It takes almost no time to log 
+into the system with the correct password, so this seems to be an ideal situation.
+At a glance, this system seems to be a vast improvement over the typical password hash login 
+system, as even with all information aside from the password, attacking the LORA_Crypt system 
+would take much longer, possibly too time-consuming to make it worth attacking in this way. 
+Of course, there could be other attacks that are effective against this system, but at this time I am not sure how to approach that.

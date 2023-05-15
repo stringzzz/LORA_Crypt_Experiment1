@@ -37,3 +37,14 @@ While it does serve as an encryption tool for storing files, one of the main rea
 8a (encrypt). Encrypt all unencrypted files in locker, excluding the .HASH file
 
 8b (decrypt). Decrypt all the encrypted files in the locker, excluding the '(username)_file.LORA' file
+
+############ Version 0.02 ##########################
+
+Added feature to be able to encrypt/decrypt the files in the locker one file at a time.
+
+################ Brute Force Time Test Experiment 1 ##################
+
+Added a directory showing a test done to see how long it would take to brute force attack a password in the LORA_Crypt system
+with a larger 'crypt file' size, in comparison to brute forcing the same password in an ordinary password hash login system.
+The full results are in the 'Test_Results.txt' file in the directory, but a sneak peak is that the LORA_Crypt system
+took several times longer to brute force.

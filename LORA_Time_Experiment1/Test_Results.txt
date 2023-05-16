@@ -36,9 +36,9 @@ in 'LORA_TimeTest_locker/LORA_TimeTest_file.HASH'. Here are the results of the b
 
 Username: LORA_TimeTest
 LORA_Crypt_TimeTest:
-Start time	1684114917
-End time:	1684114974
-Total Time elapsed: 57 seconds
+Start time	1684249908
+End time:	1684249949
+Total Time elapsed: 41
 
 Clearly it takes several times longer to brute force this system. It takes almost no time to log 
 into the system with the correct password, so this seems to be an ideal situation.

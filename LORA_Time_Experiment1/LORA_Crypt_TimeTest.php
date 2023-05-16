@@ -29,21 +29,20 @@ if (!$user_match) {
 	die("Invalid username " . $username . "\n");
 }
 
+$method = 'AES-256-CBC';
+$length = openssl_cipher_iv_length($method);
+//Retreive the (username)_file.HASH hash
+$crypt_hash = file_get_contents($username . "_locker/" . $username . "_file.HASH");
+//Set up to decrypt contents of (username)_file.LORA in AES-256_CBC
+$crypt_file_ciphertext = file_get_contents($username . "_locker/" . $username . "_file.LORA");
 $start_time = time();
 $end_time;
 for($n = 0; $n <= 5000; $n++) {
 $key = md5((string)$n);
 
-//Retreive the (username)_file.HASH hash
-$crypt_hash = file_get_contents($username . "_locker/" . $username . "_file.HASH");
-
-//Set up to decrypt contents of (username)_file.LORA in AES-256_CBC
-$method = 'AES-256-CBC';
-$length = openssl_cipher_iv_length($method);
-$crypt_file_ciphertext = file_get_contents($username . "_locker/" . $username . "_file.LORA");
-list($crypt_file_ciphertext, $iv) = explode('|', $crypt_file_ciphertext);
+list($crypt_file_ciphertext2, $iv) = explode('|', $crypt_file_ciphertext);
 $iv = base64_decode($iv);
-$crypt_file_plaintext = openssl_decrypt($crypt_file_ciphertext, $method, $key, 0, $iv);
+$crypt_file_plaintext = openssl_decrypt($crypt_file_ciphertext2, $method, $key, 0, $iv);
 
 //Compare hash of decrypted (username)_file.LORA with (username)_file.HASH
 if (md5($crypt_file_plaintext) != $crypt_hash) {

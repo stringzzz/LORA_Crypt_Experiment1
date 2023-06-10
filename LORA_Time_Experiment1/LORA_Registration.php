@@ -6,12 +6,13 @@ LORA Crypt (LOckeR Automator Version 0.01)
 Created by stringzzz, Ghostwarez Co.
 Project Start Date: 05-13-2023
 Project Completion Date: 05-14-2023
+Fixed mistake of key size not matching md5 hash size: 06-09-2023
 
 Encrypt or decrypt files in the locker folder created with 'LORA_Registration.php', 
  by logging in with your username and password
 
 1. Get username and password (Check for existing username)
-2. Generate PRNG crypt file, 8192 bytes
+2. Generate PRNG crypt file, ~1024 bytes (~1MB)
 3. Get md5 hash of crypt file
 4. Using the md5 hash of the user's password as the key, encrypt the crypt file
 5. Create locker directory with username
@@ -25,7 +26,7 @@ While it does serve as an encryption tool for storing files, one of the main rea
  for testing the setup was to make a login system that throws in an extra hoop for the attacker
  to jump through. Neither the password or the password hash are stored in the system, instead
  an attacker would have to go through an extra layer by having to decrypt a file every time 
- they want to try a password. While 8192 bytes is really not a big chore to do this, there
+ they want to try a password. While 1024 bytes is really not a big chore to do this, there
  could easily be more control on the size of the '(username)_file.LORA' file, where if it
  was much larger to the point where decrypting it really slowed down, it would prove difficult
  to crack the password in a reasonable amount of time.
@@ -53,15 +54,15 @@ echo "New password valid.\n";
 
 //Generate the data used to encrypt for the (username)_file.LORA file
 $crypt_file_string = "";
-//2^20 byte crypt file, 1MB
+//2^20 byte crypt file, ~1MB
 for ($n = 0; $n < 1048576; $n++) {
 	$crypt_file_string .= rand(0, 255);
 }
 $crypt_hash = md5($crypt_file_string);
 
-//Set up AES-256-CBC for encrypting the (username)_file.LORA file data, 
+//Set up AES-128-CBC for encrypting the (username)_file.LORA file data, 
 // with the md5 hash of the password as the key
-$method = 'AES-256-CBC';
+$method = 'AES-128-CBC';
 $key = md5($password);
 $length = openssl_cipher_iv_length($method);
 $iv = openssl_random_pseudo_bytes($length);

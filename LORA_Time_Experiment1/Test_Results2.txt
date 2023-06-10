@@ -1,0 +1,24 @@
+$ php LORA_Reg*.php
+New Username: stringzzz
+New username valid.
+New password: 5000
+Confirm the new password: 5000
+New password valid.
+stringzzz_locker directory created.
+stringzzz_file.LORA file successfully created.
+stringzzz_file.HASH file successfully created.
+New username account creation complete.
+
+$ php Pass*.php
+Password_Hash_TimeTest:
+Start time	1686358296
+End time:	1686358296
+Total Time elapsed: 0
+
+$ php LORA_C*.php
+Username: stringzzz
+LORA_Crypt_TimeTest:
+Start time	1686358320
+End time:	1686358359
+Total Time elapsed: 39
+

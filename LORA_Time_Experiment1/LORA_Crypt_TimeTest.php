@@ -5,6 +5,7 @@
 LORA Crypt TimeTest
 Created by stringzzz, Ghostwarez Co.
 05-14-2023
+Fixed mistake of key size not matching md5 hash size: 06-09-2023
 
 
 Username and password from the LORA_Registration is:
@@ -12,7 +13,7 @@ User: LORA_TimeTest
 Pass: 5000
 
 To test how long it takes to bruteforce the password in the LORA_Crypt system from "0" to "5000",
-using a 1MB 'crypt file'
+using a ~1MB 'crypt file'
 
 */
 
@@ -29,11 +30,11 @@ if (!$user_match) {
 	die("Invalid username " . $username . "\n");
 }
 
-$method = 'AES-256-CBC';
+$method = 'AES-128-CBC';
 $length = openssl_cipher_iv_length($method);
 //Retreive the (username)_file.HASH hash
 $crypt_hash = file_get_contents($username . "_locker/" . $username . "_file.HASH");
-//Set up to decrypt contents of (username)_file.LORA in AES-256_CBC
+//Set up to decrypt contents of (username)_file.LORA in AES-128-CBC
 $crypt_file_ciphertext = file_get_contents($username . "_locker/" . $username . "_file.LORA");
 $start_time = time();
 $end_time;
